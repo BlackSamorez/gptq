@@ -10,7 +10,7 @@ torch::Tensor int4MatmulCUDA(const torch::Tensor &A, const torch::Tensor &B) {
   torch::checkAllSameGPU("int4Matmul", {{A, "A", 0}, {B, "B", 1}});
   auto M = A.size(0);
   auto N = B.size(0);
-  auto K = A.size(1) * 2;  // 4bit packing is on the columns
+  auto K = A.size(1) * 2;  // = B.size(1) * 2 . 4bit packing is on the columns
   auto C = torch::empty({M, N}, torch::dtype(torch::kInt32).device(A.device()));
 
   using Gemm = cutlass::gemm::device::Gemm<
@@ -50,7 +50,7 @@ torch::Tensor int8MatmulCUDA(const torch::Tensor &A, const torch::Tensor &B) {
   torch::checkAllSameGPU("int8Matmul", {{A, "A", 0}, {B, "B", 1}});
   auto M = A.size(0);
   auto N = B.size(0);
-  auto K = A.size(1);  // 4bit packing is on the columns
+  auto K = A.size(1);  // = B.size(1)
   auto C = torch::empty({M, N}, torch::dtype(torch::kInt32).device(A.device()));
 
   using Gemm = cutlass::gemm::device::Gemm<
